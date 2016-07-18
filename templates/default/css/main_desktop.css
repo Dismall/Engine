@@ -1,0 +1,42 @@
+header, footer, article, section {
+    display: block;
+}
+
+.main-font {
+    font: normal 14px/16px Tahoma;
+}
+
+body {
+    background-color: #00cc88;
+    margin: 0 auto;
+}
+
+footer {
+    width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.main_wrapper {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.alert {
+    display: inline-block;
+    font-weight: 600;
+    border: 4px double #e9b23d;
+    background-color: #dfcf62;
+    padding: 7px 14px 7px 14px;
+    border-radius: 5px;
+}
+
+.alert-error {
+    background-color: #cc6666;
+    border-color: #cc3333;
+    color: #660000;
+}
+
+input {
+    display: block;
+}

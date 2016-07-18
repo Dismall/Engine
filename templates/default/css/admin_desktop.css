@@ -1,0 +1,162 @@
+input {
+    margin: 2px 2px 2px 0;
+}
+
+.wmax {
+    display: block;
+    width: 100%;
+    height: 25px;
+    line-height: 25px;
+    font-size: 25px;
+    border: none;
+    background-color: RGBA(240,240,240, 0.9);
+    margin: 15px 0 15px 0;
+    color: black;
+    padding: 5px 0 5px 0;
+    outline: none;
+}
+
+.input_select {
+    height: 38px;
+}
+
+.btn {
+    background: #3498db;
+    background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+    background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+    background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+    background-image: -o-linear-gradient(top, #3498db, #2980b9);
+    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    -webkit-border-radius: 4;
+    -moz-border-radius: 4;
+    border-radius: 4px;
+    padding: 8px 22px 9px 22px;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    color: white;
+}
+
+.btn:hover {
+    background: #3cb0fd;
+    background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+    text-decoration: none;
+}
+
+nav {
+    background-color: black;
+    border-radius: 7px;
+    height: 36px;
+}
+
+.flr {
+    float: right !important;
+}
+
+.inline {
+    display: inline;
+}
+
+.block {
+    display: block;
+}
+
+ul {
+    display: block;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: white;
+}
+
+ul.menu > li {
+    float: left;
+    position: relative;
+}
+
+ul.menu > li > a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: white;
+    transition: background-color 0.2s ease;
+}
+
+ul.menu > li > a:hover {
+    cursor: default;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+ul.submenu {
+    display: block;
+    overflow: hidden;
+    height: 0;
+    opacity: 0.0;
+
+    position: absolute;
+    left: 0;
+    background-color: rgba(4, 4, 4, 0.8);
+    transition: opacity 0.4s ease;
+}
+
+ul.rsubmenu {
+    display: block;
+    overflow: hidden;
+    height: 0;
+    opacity: 0.0;
+
+    position: absolute;
+    right: 0;
+    background-color: rgba(4, 4, 4, 0.8);
+    transition: opacity 0.4s ease;
+    z-index: 1;
+}
+
+ul.submenu > li, ul.rsubmenu > li {
+    display: block;
+}
+ul.submenu > li > a, ul.rsubmenu > li > a {
+    display: inline-block;
+    text-decoration: none;
+    cursor: default;
+    color: white;
+    width: 100%;
+    height: 100%;
+}
+ul.submenu > li, ul.rsubmenu > li {
+    white-space: nowrap;
+    display: block;
+    padding: 6px;
+    height: 20px;
+    width: auto;
+    min-width: 60px;
+    cursor: default;
+    transition: background-color 0.2s ease-out;
+}
+ul.submenu > li:hover, ul.rsubmenu > li:hover {
+    background-color: rgba(255, 55, 255, 0.2);
+}
+
+ul.menu > li:hover > ul.submenu, ul.menu > li:hover > ul.rsubmenu {
+    height: auto;
+    opacity: 1.0;
+}
+
+.deleteTable {
+    border: none;
+    border-collapse: collapse;
+}
+.deleteTable th {
+    background: rgba(4, 4, 4, 0.2);
+}
+.deleteTable tr:nth-child(even) {
+    background: rgba(4, 4, 4, 0.2);
+}
+
+article {
+    border: 1px solid #CCC;
+}
