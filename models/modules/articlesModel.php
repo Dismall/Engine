@@ -28,7 +28,7 @@ class News {
         $this->db = $GLOBALS['db'];
     }
 
-    public function getNews($show = true, $count = NewsDefaultCount) {
+    public function getNews($show = true, $offset = 0, $count = ArticlesDefaultCount) {
         $sql = 'SELECT
                     Article.title,
                     Article.text,
@@ -55,9 +55,9 @@ class News {
                 ' . (isset($show) ? 'AND Article.show = ' . ($show ? 'true' : 'false') : '') . '
                 ORDER BY
                     Article.id DESC
-                LIMIT ?';
+                LIMIT ? OFFSET ?';
 
-        $result = $this->db->Query($sql, array($count));
+        $result = $this->db->Query($sql, array($count, $offset));
 
         $article = array();
         while ($row = $result->fetch()) {

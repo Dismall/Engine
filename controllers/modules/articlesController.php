@@ -16,8 +16,11 @@ class Articles implements IModuleActionSetup {
     {
         $this->basicSetup();
 
+        $offset = 0;
+        if(isset($_GET['ssf']) && intval($_GET['ssf']) > 0) $offset = (intval($_GET['ssf']) - 1) * ArticlesDefaultCount;
+
         $articles = new News();
-        $this->smarty->assign('articles', $articles->getNews(null));
+        $this->smarty->assign('articles', $articles->getNews(null, $offset));
 
         $this->endSetup();
     }
@@ -99,6 +102,12 @@ class Articles implements IModuleActionSetup {
                 if($r) $this->smarty->assign('message', 'Обновлено!');
             }
         }
+
+        $this->endSetup();
+    }
+
+    public function tagsAction() {
+        $this->basicSetup();
 
         $this->endSetup();
     }
