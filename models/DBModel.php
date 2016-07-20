@@ -12,17 +12,24 @@ interface IDB {
 class DB implements IDB {
     private $conn;
     private $sql;
+    private $mf;
 
     /**
      * Конструктор базы данных
      * @param MainFunctions $mainF
      */
     public function __construct() {
+        $this->mf = $GLOBALS['mainFunc'];
+
         try {
-            $this->conn = new PDO("pgsql:dbname=" . DBDataBase . ";host=" . DBHost . ";port=" . DBPort, DBUser, DBPassword);
+            $this->conn = new PDO("pgsql:dbname=" . DBDataBase . ";host=" . DBHost . ";port=" . DBPort, DBUser, DBPassword,
+            array(
+                PDO::ATTR_TIMEOUT => "5",
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            ));
             $this->conn->exec('SET search_path TO ' . DBSearchPath);
         } catch (PDOException $e) {
-            die('Подключение не удалось: ' . $e->getMessage());
+            $this->mf->d('Ошибка подключения к базе данных: ' . $e->getMessage());
         }
     }
 
@@ -46,7 +53,7 @@ class DB implements IDB {
             $this->sql->execute($arr);
             $this->sql->setFetchMode($fm);
         } catch (Exception $e) {
-            die($e->message());
+            $this->mf->d('Ошибка подключения к базе данных: ' . $e->getMessage());
         }
 
         return $this->sql;

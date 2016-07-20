@@ -11,8 +11,8 @@
     if(empty($page)) $page = "index";
 
     //Создание экзепляров: основных функций и базы данных
-    $db = new DB();
     $mainFunc = new mainFunctions();
+    $db = new DB();
 
     //Формирование страницы
     $mainFunc->loadSmarty(); //Инициализация Smarty
