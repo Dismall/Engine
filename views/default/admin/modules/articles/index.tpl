@@ -12,4 +12,10 @@
             <button onclick="if(confirm('Вы действительно хотите удалить статью?')) location.href='/admin/modules/articles/delete/{$article->id}'">Удалить</button>
         </article>
     {/foreach}
+    {if $smarty.get.ssf > 0}
+        {assign var="back" value=$smarty.get.ssf-1}
+        {assign var="forward" value=$smarty.get.ssf+1}
+    {/if}
+    <button type="button" onclick="location.href='/admin/modules/articles/{$back}'" {if !$back}disabled{/if}>Назад</button>
+    <button type="button" onclick="location.href='/admin/modules/articles/{$forward}'" {if !$forward}disabled{/if}>Вперед</button>
 {/if}
