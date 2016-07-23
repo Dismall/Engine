@@ -1,13 +1,15 @@
 <?php
-    require_once('/models/AdminModel.php');
+require_once(PathPrefix . "IControllerInterface.php");
+require_once('/models/AdminModel.php');
 
-    function testAction() {
+class adminController implements IController {
+    public function testAction() {
         echo 'indexController.php -> testAction';
 
         return null;
     }
 
-    function indexAction($smarty, ImainFunctions $mainF) {
+    public function indexAction($smarty, ImainFunctions $mainF) {
         $ap = new AdminPanel();
 
         $smarty->assign('is_auth', $ap->isAuthenticated());
@@ -26,7 +28,7 @@
         $mainF->loadTemplate('admin');
     }
 
-    function authAction($smarty, ImainFunctions $mainF) {
+    public function authAction($smarty, ImainFunctions $mainF) {
         $ap = new AdminPanel();
 
         $user = $_POST['username'];
@@ -50,7 +52,7 @@
         $mainF->loadTemplate('error');
     }
 
-    function logoutAction($smarty, ImainFunctions $mainF) {
+    public function logoutAction($smarty, ImainFunctions $mainF) {
         session_start();
 
         if(isset($_SESSION['userID']) || isset($_SESSION['userHash']))
@@ -63,7 +65,7 @@
         exit();
     }
 
-    function errorAction($smarty, ImainFunctions $mainF) {
+    public function errorAction($smarty, ImainFunctions $mainF) {
         //Объявляем переменные Smarty
         $smarty->assign('pageTitle', SiteName . ' - 404');
 
@@ -72,10 +74,11 @@
         exit();
     }
 
-    function modulesAction($smarty, ImainFunctions $mainF) {
+    public function modulesAction($smarty, ImainFunctions $mainF) {
         $ap = new AdminPanel();
 
-        $smarty->assign('is_auth', $ap->isAuthenticated());
+        if(!$ap->isAuthenticated()) $this->backToMain();
+
         $smarty->assign('stylesheet', array_merge(
                                             $smarty->tpl_vars['stylesheet']->value,
                                             array(
@@ -91,8 +94,11 @@
 
                 $ssf = isset($_GET['ssf']) ?
                             (file_exists(Dir . TemplatePrefix . "admin" . Separator . "modules" . Separator . $controller . Separator . $_GET['ssf'] . TemplatePostfix) ? $_GET['ssf'] : 'index') : 'index';
+                            
+                $controller = ucfirst($controller);
+                $articles = new $controller();
+                $controller = strtolower($controller);
 
-                $articles = new Articles();
                 if(method_exists($articles, $ssf . 'Action'))
                 {
                     $f = $ssf . 'Action';
@@ -111,3 +117,9 @@
         //Формируем страницу
         $mainF->loadTemplate('admin/modules');
     }
+
+    public function backToMain() {
+        header("Location: /admin");
+        exit();
+    }
+}

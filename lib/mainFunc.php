@@ -14,10 +14,11 @@ class mainFunctions implements ImainFunctions {
         include_once PathPrefix . $controller . PathPostfix;
 
         $f = $action . "Action";
+        $class = $controller . 'Controller';
+        $class = new $class();
+        if(!method_exists($class, $f)) $f = 'errorAction';
 
-        if(!function_exists($f)) $f = 'errorAction';
-
-        $tpl = $f($GLOBALS['smarty'], $GLOBALS['mainFunc']);
+        $tpl = $class->$f($GLOBALS['smarty'], $GLOBALS['mainFunc']);
     }
 
     public function loadSmarty() {

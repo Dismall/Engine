@@ -1,47 +1,17 @@
 <?php /* Формирование главной страницы и 404 */
+require_once(PathPrefix . "IControllerInterface.php");
+require_once(PathPrefix . "articles" . PathPostfix);
 
-require_once("/models/modules/articlesModel.php"); //Подключаем набор функций статей
+class indexController extends articlesController implements IController {
+    public function indexAction($smarty, ImainFunctions $mainF) {
+        parent::indexAction($smarty, $mainF);
+    }
 
-/**
- * Тестовый метод
- * @return null
- */
-function testAction() {
-    echo 'indexController.php -> testAction';
+    public function errorAction($smarty, ImainFunctions $mainF) {
+        //Объявляем переменные Smarty
+        $smarty->assign('pageTitle', SiteName . ' - 404');
 
-    return null;
-}
-
-/**
- * Метод, формирующий главную страницу
- * @param  Smarty $smarty
- * @param  MainFunctions $mainF
- * @return null
- */
-function indexAction($smarty, ImainFunctions $mainF) {
-    $articleClass = new News(); //Создаем экземпляр класса
-    $articles = $articleClass->getNews(); //Получаем статьи
-
-    //$mainF->d($articles, false);
-    //Объявляем переменные Smarty
-    $smarty->assign('pageTitle', 'Главная');
-    $smarty->assign('articles', $articles);
-    $smarty->assign('status', $GLOBALS['db']->getStatus());
-
-    //Формируем страницу
-    $mainF->loadTemplate('index');
-}
-
-/**
- * Метод, формирующий 404
- * @param  Smarty $smarty
- * @param  MainFunctions $mainF
- * @return null
- */
-function errorAction($smarty, ImainFunctions $mainF) {
-    //Объявляем переменные Smarty
-    $smarty->assign('pageTitle', SiteName . ' - 404');
-
-    //Формируем страницу
-    $mainF->loadTemplate('error');
+        //Формируем страницу
+        $mainF->loadTemplate('error');
+    }
 }
