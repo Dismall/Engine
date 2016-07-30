@@ -1,9 +1,9 @@
 <?php
     //Подключение библиотек
-    include_once("/config/config.php"); //Конфигурация
-    include_once("/models/DBModel.php"); //База данных
-    include_once("/lib/mainFunc.php"); //Основные функции
-    include_once("/lib/Smarty/libs/Smarty.class.php"); //Smarty
+    include_once(dirname(__FILE__) . "/config/config.php"); //Конфигурация
+    include_once(Dir . "/models/DBModel.php"); //База данных
+    include_once(Dir . "/lib/mainFunc.php"); //Основные функции
+    include_once(Dir . "/lib/Smarty/libs/Smarty.class.php"); //Smarty
 
     //Определение страницы и метода
     $page = isset($_GET['p']) ? mb_strtolower($_GET['p']) : "index"; //Страница
