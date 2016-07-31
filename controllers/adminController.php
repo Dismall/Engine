@@ -1,6 +1,6 @@
 <?php
 require_once(PathPrefix . "IControllerInterface.php");
-require_once('/models/AdminModel.php');
+require_once(Dir . '/models/AdminModel.php');
 
 class adminController implements IController {
     public function testAction() {
@@ -8,7 +8,7 @@ class adminController implements IController {
 
         return null;
     }
-
+    
     public function indexAction($smarty, ImainFunctions $mainF) {
         $ap = new AdminPanel();
 
@@ -94,7 +94,7 @@ class adminController implements IController {
 
                 $ssf = isset($_GET['ssf']) ?
                             (file_exists(Dir . TemplatePrefix . "admin" . Separator . "modules" . Separator . $controller . Separator . $_GET['ssf'] . TemplatePostfix) ? $_GET['ssf'] : 'index') : 'index';
-                            
+
                 $controller = ucfirst($controller);
                 $articles = new $controller();
                 $controller = strtolower($controller);

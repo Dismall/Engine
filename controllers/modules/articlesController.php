@@ -1,5 +1,5 @@
 <?php
-require_once("/models/modules/articlesModel.php");
+require_once(Dir . "/models/modules/articlesModel.php");
 require_once(PathPrefix . "IModuleInterface.php");
 
 class Articles implements IModuleActionSetup {
@@ -39,26 +39,27 @@ class Articles implements IModuleActionSetup {
         if(isset($_POST['deleteID']) || isset($_GET['id']))
         {
             $id = isset($_POST['deleteID']) ? $_POST['deleteID'] : $_GET['id'];
-            $this->smarty->assign('message', $articles->deleteArticle(intval($id)) ? 'Удалено' : 'Ошибка');
+            $result = $articles->deleteArticle(intval($id));
+
+            $this->smarty->assign(($result['success'] ? 'success' : 'error') . '_message', $result['message']);
         }
         else
         {
-            $this->smarty->assign('error_message', 'Значение не определено!');
-            errorAction($this->smarty, $GLOBALS['mainFunc']);
+            $this->smarty->assign('error_message', ARTICLES_EMPTYPARAM);
         }
 
         $this->endSetup();
     }
 
+    /**
+     * Редактирование статьи
+     * @return void
+     */
     public function editAction()
     {
-        $this->basicSetup();
+        if(!isset($_GET['id'])) header("Location: /admin/modules/articles");
 
-        if(!isset($_GET['id']))
-        {
-            $this->smarty->assign('error_message', 'Значение не определено!');
-            errorAction($this->smarty, $GLOBALS['mainFunc']);
-        }
+        $this->basicSetup();
 
         $articles = new News();
         $res = $articles->getArticleById(intval($_GET['id']));
@@ -67,6 +68,10 @@ class Articles implements IModuleActionSetup {
         $this->endSetup();
     }
 
+    /**
+     * Создание статьи (добавление)
+     * @return void
+     */
     public function saveAction()
     {
         $this->basicSetup();
@@ -76,32 +81,33 @@ class Articles implements IModuleActionSetup {
             $articles = new News();
             $result = $articles->addArticle($_POST['title'], $_POST['articleText'], $_POST['author'], $_POST['visiable']);
 
-            $this->smarty->assign('message', $result ? 'Сохранено' : 'Ошибка');
+            $this->smarty->assign(($result['success'] ? 'success' : 'error') . '_message', $result['message']);
         }
         $this->endSetup();
     }
 
+    /**
+     * Обновление статьи
+     * @return void
+     */
     public function updateAction()
     {
         $this->basicSetup();
 
-        $this->smarty->assign('message', 'Ошибка!');
+        $_POST['visiable'] = isset($_POST['visiable']) ? 'true' : 'false';
 
-        if(isset($_GET['id']))
+        if(isset($_GET['id']) && isset($_POST['title']) && isset($_POST['articleText']) && isset($_POST['visiable']) && isset($_POST['author']))
         {
-            $_POST['visiable'] = isset($_POST['visiable']) ? 'true' : 'false';
-            if(isset($_POST['title']) && isset($_POST['articleText']) && isset($_POST['visiable']) && isset($_POST['author']))
-            {
-                $articles = new News();
-                $r = $articles->updateArticle(intval($_GET['id']),
-                                        $_POST['title'],
-                                        $_POST['articleText'],
-                                        $_POST['author'],
-                                        $_POST['visiable']);
-
-                if($r) $this->smarty->assign('message', 'Обновлено!');
-            }
+            $articles = new News();
+            $result = $articles->updateArticle(intval($_GET['id']),
+                                    $_POST['title'],
+                                    $_POST['articleText'],
+                                    $_POST['author'],
+                                    $_POST['visiable']);
+            $this->smarty->assign(($result['success'] ? 'success' : 'error') . '_message', $result['message']);
         }
+        else
+            $this->smarty->assign('error_message', ARTICLES_UPDATE_ERROR);
 
         $this->endSetup();
     }

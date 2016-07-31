@@ -136,7 +136,8 @@ class News {
     public function addArticle($title, $content, $author, $visiable) {
         $sql = 'SELECT Accounts.id FROM "Accounts" AS Accounts WHERE LOWER(Accounts.username) = LOWER(?)';
         $result = $this->db->Query($sql, array($author));
-        if($result->rowCount() != 1) return false;
+        if($result->rowCount() != 1)
+            return $this->error(ARTICLES_USER_NOTFOUND, __METHOD__);
         $id = $result->fetch()['id'];
 
         $visiable = $visiable ? 'true' : 'false';
@@ -148,28 +149,39 @@ class News {
                                     $visiable
                                 ));
 
-        return true;
+        return $this->success(ARTICLES_ADD_SUCCESS, __METHOD__);
     }
 
     public function deleteArticle($id) {
         $sql = 'DELETE FROM "Articles" WHERE id = ?';
         $r = $this->db->Query($sql, array($id));
-        if($r->rowCount() != 1) return false;
+        if($r->rowCount() != 1)
+            return $this->error(ARTICLES_DELETE_ERROR, __METHOD__);
 
-        return true;
+        return $this->success(ARTICLES_DELETE_SUCCESS, __METHOD__);
     }
 
     public function updateArticle($id, $title, $text, $author, $show) {
 
         $sql = 'SELECT Accounts.id FROM "Accounts" AS Accounts WHERE LOWER(Accounts.username) = LOWER(?)';
         $result = $this->db->Query($sql, array($author));
-        if($result->rowCount() != 1) return false;
+        if($result->rowCount() != 1)
+            return $this->error(ARTICLES_USER_NOTFOUND, __METHOD__);
         $userID = $result->fetch()['id'];
 
         $sql = 'UPDATE "Articles" SET title=?, text=?, author=?, show=? WHERE id=?';
         $result = $this->db->Query($sql, array($title, $text, $userID, $show, $id));
-        if($result->rowCount() != 1) return false;
+        if($result->rowCount() != 1)
+            return $this->error(ARTICLES_UPDATE_ERROR, __METHOD__);
 
-        return true;
+        return $this->success(ARTICLES_UPDATE_SUCCESS, __METHOD__);
+    }
+
+    private function error($str, $method) {
+        return array("success" => false, "method" => $method, "message" => $str);
+    }
+
+    private function success($str, $method) {
+        return array("success" => true, "method" => $method, "message" => $str);
     }
 }

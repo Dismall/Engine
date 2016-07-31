@@ -37,6 +37,12 @@ footer {
     color: #660000;
 }
 
+.alert-success {
+    background-color: #66cc66;
+    border-color: #33cc33;
+    color: #006600;
+}
+
 input {
     display: block;
 }

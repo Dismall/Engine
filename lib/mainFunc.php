@@ -8,6 +8,12 @@ interface ImainFunctions {
 }
 
 class mainFunctions implements ImainFunctions {
+    /**
+     * Загрузка страницы
+     * @param  string $controller
+     * @param  string $action
+     * @return void
+     */
     public function loadPage($controller, $action = 'index') {
         if(!file_exists(PathPrefix . $controller . PathPostfix)) $controller = 'index' AND $action = "error";
 

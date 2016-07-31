@@ -1,6 +1,6 @@
 <?php
 require_once(PathPrefix . "IControllerInterface.php");
-require_once("/models/modules/articlesModel.php"); //Подключаем набор функций статей
+require_once(Dir . "/models/modules/articlesModel.php"); //Подключаем набор функций статей
 
 class articlesController implements IController{
     public function indexAction($smarty, ImainFunctions $mainF) {
