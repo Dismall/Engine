@@ -8,7 +8,7 @@ class adminController implements IController {
 
         return null;
     }
-    
+
     public function indexAction($smarty, ImainFunctions $mainF) {
         $ap = new AdminPanel();
 
@@ -68,7 +68,7 @@ class adminController implements IController {
     public function errorAction($smarty, ImainFunctions $mainF) {
         //Объявляем переменные Smarty
         $smarty->assign('pageTitle', SiteName . ' - 404');
-
+        $smarty->assign('error_message', SiteName . ' - 404');
         //Формируем страницу
         $mainF->loadTemplate('error');
         exit();

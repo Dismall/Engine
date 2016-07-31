@@ -1,6 +1,4 @@
         </div>
-        <footer>
-            {$SiteName} 2016
-        </footer>
+        <footer>{$SiteName} 2016</footer>
     </body>
 </html>

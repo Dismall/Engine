@@ -1,3 +1,21 @@
+.htmlText {
+    background-color: transparent;
+    border: none;
+    overflow: hidden;
+    overflow-y: auto;
+    resize: none;
+    outline: none;
+    cursor: default;
+
+    width: 99%;
+    min-height: 70px;
+}
+
+.htmlText::selection {
+    background-color: transparent;
+    cursor: default;
+}
+
 input {
     margin: 2px 2px 2px 0;
 }

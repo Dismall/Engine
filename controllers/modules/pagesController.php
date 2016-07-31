@@ -1,4 +1,5 @@
 <?php
+require_once(Dir . "/models/modules/pagesModel.php");
 require_once(PathPrefix . "IModuleInterface.php");
 
 class Pages implements IModuleActionSetup {
@@ -14,6 +15,12 @@ class Pages implements IModuleActionSetup {
     public function indexAction()
     {
         $this->basicSetup();
+
+        $offset = 0;
+        if(isset($_GET['ssf']) && intval($_GET['ssf']) > 0) $offset = (intval($_GET['ssf']) - 1) * ArticlesDefaultCount;
+
+        $page = new PageModel();
+        $this->smarty->assign('pages', $page->getPages(ArticlesDefaultCount, $offset));
 
         $this->endSetup();
     }
