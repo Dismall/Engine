@@ -1,6 +1,7 @@
 <?php
 require_once(PathPrefix . "IControllerInterface.php");
 require_once(Dir . '/models/AdminModel.php');
+require_once(PathPrefix . "Account.php");
 
 class adminController implements IController {
     public function testAction() {
@@ -32,30 +33,20 @@ class adminController implements IController {
     }
 
     public function authAction() {
-        $ap = new AdminPanel();
-
         $user = $_POST['username'];
         $password = $_POST['password'];
 
         $mainf = mainFunctions::getInstance();
         $smarty = $mainf->getSmarty();
 
-        if($ap->isAuthenticated() || $ap->auth($user, $password))
-        {
-            if(!$ap->canEnter())
-            {
-                $smarty->assign('error_message', ADMIN_AUTH_NORIGHTS);
-                $mainf->loadTemplate('error');
-                return;
-            }
+        $account = Account::getInstance();
+        $auth = $account->Auth($user, $password);
+        if(!$account->isAdmin())
+            $smarty->assign('error_message', 'Доступ запрещен!');
+        else
+            $smarty->assign(($auth['success'] ? 'success' : 'error') . '_message', $auth['message']);
 
-            header("Location: /admin");
-            exit();
-        }
-
-        $smarty->assign('error_message', ADMIN_AUTH_ERROR);
-
-        $mainf->loadTemplate('error');
+        $this->indexAction();
     }
 
     public function logoutAction() {
