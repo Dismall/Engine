@@ -35,7 +35,7 @@ class PageModel {
     private $db;
 
     public function __construct() {
-        $this->db = $GLOBALS['db'];
+        $this->db = DB::getInstance();
     }
 
     public function getPages($count, $offset = 0) {

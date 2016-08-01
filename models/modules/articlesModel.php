@@ -25,7 +25,7 @@ class News {
     private $db;
 
     public function __construct() {
-        $this->db = $GLOBALS['db'];
+        $this->db = DB::getInstance();
     }
 
     public function getNews($show = true, $offset = 0, $count = ArticlesDefaultCount) {

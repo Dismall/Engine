@@ -10,16 +10,23 @@ interface IDB {
 }
 
 class DB implements IDB {
+    private static $instance;
     private $conn;
     private $sql;
     private $mf;
 
+    public static function getInstance() {
+        if(!isset(self::$instance))
+            self::$instance = new DB();
+
+        return self::$instance;
+    }
     /**
      * Конструктор базы данных
      * @param MainFunctions $mainF
      */
     public function __construct() {
-        $this->mf = $GLOBALS['mainFunc'];
+        $this->mf = mainFunctions::getInstance();
 
         try {
             $this->conn = new PDO("pgsql:dbname=" . DBDataBase . ";host=" . DBHost . ";port=" . DBPort, DBUser, DBPassword,

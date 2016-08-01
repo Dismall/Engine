@@ -9,8 +9,11 @@ class adminController implements IController {
         return null;
     }
 
-    public function indexAction($smarty, ImainFunctions $mainF) {
+    public function indexAction() {
         $ap = new AdminPanel();
+
+        $mainf = mainFunctions::getInstance();
+        $smarty = $mainf->getSmarty();
 
         $smarty->assign('is_auth', $ap->isAuthenticated());
         $smarty->assign('stylesheet', array_merge(
@@ -25,21 +28,24 @@ class adminController implements IController {
         $smarty->assign('userHash', $_SESSION['userHash']);
 
         //Формируем страницу
-        $mainF->loadTemplate('admin');
+        $mainf->loadTemplate('admin');
     }
 
-    public function authAction($smarty, ImainFunctions $mainF) {
+    public function authAction() {
         $ap = new AdminPanel();
 
         $user = $_POST['username'];
         $password = $_POST['password'];
+
+        $mainf = mainFunctions::getInstance();
+        $smarty = $mainf->getSmarty();
 
         if($ap->isAuthenticated() || $ap->auth($user, $password))
         {
             if(!$ap->canEnter())
             {
                 $smarty->assign('error_message', ADMIN_AUTH_NORIGHTS);
-                $mainF->loadTemplate('error');
+                $mainf->loadTemplate('error');
                 return;
             }
 
@@ -49,10 +55,10 @@ class adminController implements IController {
 
         $smarty->assign('error_message', ADMIN_AUTH_ERROR);
 
-        $mainF->loadTemplate('error');
+        $mainf->loadTemplate('error');
     }
 
-    public function logoutAction($smarty, ImainFunctions $mainF) {
+    public function logoutAction() {
         session_start();
 
         if(isset($_SESSION['userID']) || isset($_SESSION['userHash']))
@@ -65,19 +71,24 @@ class adminController implements IController {
         exit();
     }
 
-    public function errorAction($smarty, ImainFunctions $mainF) {
+    public function errorAction() {
+        $mainf = mainFunctions::getInstance();
+        $smarty = $mainf->getSmarty();
         //Объявляем переменные Smarty
         $smarty->assign('pageTitle', SiteName . ' - 404');
         $smarty->assign('error_message', SiteName . ' - 404');
         //Формируем страницу
-        $mainF->loadTemplate('error');
+        $mainf->loadTemplate('error');
         exit();
     }
 
-    public function modulesAction($smarty, ImainFunctions $mainF) {
+    public function modulesAction() {
         $ap = new AdminPanel();
 
         if(!$ap->isAuthenticated()) $this->backToMain();
+
+        $mainf = mainFunctions::getInstance();
+        $smarty = $mainf->getSmarty();
 
         $smarty->assign('stylesheet', array_merge(
                                             $smarty->tpl_vars['stylesheet']->value,
@@ -109,13 +120,13 @@ class adminController implements IController {
                 $smarty->assign('module', $controller);
                 $smarty->assign('username', $ap->user);
 
-                $mainF->loadTemplate('admin/module');
+                $mainf->loadTemplate('admin/module');
                 return;
             }
         }
 
         //Формируем страницу
-        $mainF->loadTemplate('admin/modules');
+        $mainf->loadTemplate('admin/modules');
     }
 
     public function backToMain() {

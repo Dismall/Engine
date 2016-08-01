@@ -8,6 +8,15 @@ interface ImainFunctions {
 }
 
 class mainFunctions implements ImainFunctions {
+    private static $instance;
+    private $smarty;
+
+    public static function getInstance() {
+        if(!isset(self::$instance))
+            self::$instance = new mainFunctions();
+
+        return self::$instance;
+    }
     /**
      * Загрузка страницы
      * @param  string $controller
@@ -24,29 +33,28 @@ class mainFunctions implements ImainFunctions {
         $class = new $class();
         if(!method_exists($class, $f)) $f = 'errorAction';
 
-        $tpl = $class->$f($GLOBALS['smarty'], $GLOBALS['mainFunc']);
+        $tpl = $class->$f();
     }
 
     public function loadSmarty() {
-        global $smarty;
-        $smarty = new Smarty();
+        $this->smarty = new Smarty();
 
-        $smarty->setTemplateDir(TemplatePrefix);
-        $smarty->setCompileDir('/tmp/Smarty/templates_c');
-        $smarty->setCacheDir('/tmp/Smarty/cache');
-        $smarty->setConfigDir('/lib/Smarty/configs');
+        $this->smarty->setTemplateDir(TemplatePrefix);
+        $this->smarty->setCompileDir('/tmp/Smarty/templates_c');
+        $this->smarty->setCacheDir('/tmp/Smarty/cache');
+        $this->smarty->setConfigDir('/lib/Smarty/configs');
 
-        $smarty->assign('templatePath', TemplatePath);
-        $smarty->assign('SiteName', SiteName);
-        $smarty->assign('stylesheet', array(
+        $this->smarty->assign('templatePath', TemplatePath);
+        $this->smarty->assign('SiteName', SiteName);
+        $this->smarty->assign('stylesheet', array(
                                         "main_desktop" => "min-width: 1000.1px",
                                         "main_mobile" => "max-width: 1000px"
                                     ));
-        return $smarty;
+        return $this->getSmarty();
     }
 
     public function loadTemplate($tpl = 'index') {
-        $GLOBALS['smarty']->display($tpl . TemplatePostfix);
+        $this->getSmarty()->display($tpl . TemplatePostfix);
     }
 
     /**
@@ -69,6 +77,10 @@ class mainFunctions implements ImainFunctions {
      * @return null
      */
     public function DSmarty($die = true) {
-        $this->d($globals['smarty'], $die);
+        $this->d($this->getSmarty(), $die);
+    }
+
+    public function getSmarty() {
+        return $this->smarty;
     }
 }

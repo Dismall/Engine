@@ -14,26 +14,22 @@ class Articles implements IModuleActionSetup {
 
     public function indexAction()
     {
-        $this->basicSetup();
-
         $offset = 0;
         if(isset($_GET['ssf']) && intval($_GET['ssf']) > 0) $offset = (intval($_GET['ssf']) - 1) * ArticlesDefaultCount;
 
+        $this->setup();
         $articles = new News();
         $this->smarty->assign('articles', $articles->getNews(null, $offset));
-
-        $this->endSetup();
     }
 
     public function addAction()
     {
-        $this->basicSetup();
-        $this->endSetup();
+        $this->setup();
     }
 
     public function deleteAction()
     {
-        $this->basicSetup();
+        $this->setup();
         $articles = new News();
 
         if(isset($_POST['deleteID']) || isset($_GET['id']))
@@ -47,8 +43,6 @@ class Articles implements IModuleActionSetup {
         {
             $this->smarty->assign('error_message', ARTICLES_EMPTYPARAM);
         }
-
-        $this->endSetup();
     }
 
     /**
@@ -59,13 +53,11 @@ class Articles implements IModuleActionSetup {
     {
         if(!isset($_GET['id'])) header("Location: /admin/modules/articles");
 
-        $this->basicSetup();
+        $this->setup();
 
         $articles = new News();
         $res = $articles->getArticleById(intval($_GET['id']));
         if($res) $this->smarty->assign('article', $res);
-
-        $this->endSetup();
     }
 
     /**
@@ -74,7 +66,7 @@ class Articles implements IModuleActionSetup {
      */
     public function saveAction()
     {
-        $this->basicSetup();
+        $this->setup();
 
         if(isset($_POST['title']) && isset($_POST['articleText']) && isset($_POST['visiable']) && isset($_POST['author']))
         {
@@ -83,7 +75,6 @@ class Articles implements IModuleActionSetup {
 
             $this->smarty->assign(($result['success'] ? 'success' : 'error') . '_message', $result['message']);
         }
-        $this->endSetup();
     }
 
     /**
@@ -92,7 +83,7 @@ class Articles implements IModuleActionSetup {
      */
     public function updateAction()
     {
-        $this->basicSetup();
+        $this->setup();
 
         $_POST['visiable'] = isset($_POST['visiable']) ? 'true' : 'false';
 
@@ -108,25 +99,18 @@ class Articles implements IModuleActionSetup {
         }
         else
             $this->smarty->assign('error_message', ARTICLES_UPDATE_ERROR);
-
-        $this->endSetup();
     }
 
     public function tagsAction() {
-        $this->basicSetup();
 
-        $this->endSetup();
     }
 
-    function basicSetup()
+    function setup()
     {
-        $this->smarty = $GLOBALS['smarty'];
+        $mainf = mainFunctions::getInstance();
+        $this->smarty = $mainf->getSmarty();
+
         $this->smarty->assign('module_name', self::$name);
         $this->smarty->assign('module_actions', self::$actions);
-    }
-
-    function endSetup()
-    {
-        $GLOBALS['smarty'] = $this->smarty;
     }
 }

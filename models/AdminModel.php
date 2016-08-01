@@ -21,7 +21,7 @@ class AdminPanel {
                     AND
                         Accounts.id = ?
                     LIMIT 1';
-            $result = $GLOBALS['db']->Query($sql, array($_SESSION['userHash'], $_SESSION['userID']));
+            $result = DB::getInstance()->Query($sql, array($_SESSION['userHash'], $_SESSION['userID']));
             if($result->rowCount() != 1) return false;
 
             $row = $result->fetch();
@@ -55,7 +55,7 @@ class AdminPanel {
                     LOWER(Accounts.username) = LOWER(?)
                 LIMIT 1
                     ';
-        $result = $GLOBALS['db']->Query($sql, array($username));
+        $result = DB::getInstance()->Query($sql, array($username));
         if($result->rowCount() != 1) return false;
 
         $row = $result->fetch();
@@ -73,7 +73,7 @@ class AdminPanel {
         $sql = 'UPDATE "Accounts"
                 SET hash = ?, "lastLogin" = NOW()
                 WHERE id = ?';
-        $result = $GLOBALS['db']->Query($sql, array($hash, $this->userID));
+        $result = DB::getInstance()->Query($sql, array($hash, $this->userID));
 
         session_start();
 

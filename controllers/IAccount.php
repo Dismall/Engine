@@ -6,6 +6,7 @@ interface IAccount {
     public $avatar;
 
     public getAvatarName();
-    public isAdmin();
-    public hasAccess();
+    public isAdmin() {
+        return ($this->role === "Admin") ? true : false;
+    }
 }

@@ -14,26 +14,21 @@ class Pages implements IModuleActionSetup {
 
     public function indexAction()
     {
-        $this->basicSetup();
+        $this->setup();
 
         $offset = 0;
         if(isset($_GET['ssf']) && intval($_GET['ssf']) > 0) $offset = (intval($_GET['ssf']) - 1) * ArticlesDefaultCount;
 
         $page = new PageModel();
         $this->smarty->assign('pages', $page->getPages(ArticlesDefaultCount, $offset));
-
-        $this->endSetup();
     }
 
-    function basicSetup()
+    function setup()
     {
-        $this->smarty = $GLOBALS['smarty'];
+        $mainf = mainFunctions::getInstance();
+        $this->smarty = $mainf->getSmarty();
+
         $this->smarty->assign('module_name', self::$name);
         $this->smarty->assign('module_actions', self::$actions);
-    }
-
-    function endSetup()
-    {
-        $GLOBALS['smarty'] = $this->smarty;
     }
 }
