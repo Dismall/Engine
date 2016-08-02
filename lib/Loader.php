@@ -1,21 +1,14 @@
 <?php
 namespace lib;
 
-class Loader {
+class Loader extends Logger {
     public static function loadClass($class) {
         $path = explode("\\", $class);
-
         $file = implode(SEPARATOR, $path) . EXT_PHP;
-
-        //echo var_dump($file);
-
         if(!file_exists($file)) return false;
 
         require_once($file);
-    }
 
-    public static function loadSmarty($class) {
-        //if($class != 'Smarty') return false;
-
+        parent::Log(__METHOD__, "Class $class has been loaded!");
     }
 }
