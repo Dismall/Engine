@@ -1,4 +1,8 @@
 <?php
+namespace models;
+
+use lib\DataBase;
+
 class AccountModel {
     public static function AuthUser($username, $password) {
         $sql = 'SELECT
@@ -14,7 +18,7 @@ class AccountModel {
                 LIMIT 1
                     ';
 
-        $result = DB::getInstance()->Query($sql, array($username));
+        $result = DataBase::getInstance()->Query($sql, array($username));
         if($result->rowCount() != 1)
             return array("success" => false, "message" => "Пользователь не найден!");
 
@@ -29,7 +33,7 @@ class AccountModel {
         $sql = 'UPDATE "Accounts"
                 SET hash = ?, "lastLogin" = NOW()
                 WHERE id = ?';
-        $result = DB::getInstance()->Query($sql, array($hash, $row['id']));
+        $result = DataBase::getInstance()->Query($sql, array($hash, $row['id']));
 
         return array("success" => true,
                     "id" => $row['id'],

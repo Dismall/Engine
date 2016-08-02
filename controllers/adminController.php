@@ -1,7 +1,9 @@
 <?php
-require_once(PathPrefix . "IControllerInterface.php");
-require_once(Dir . '/models/AdminModel.php');
-require_once(PathPrefix . "Account.php");
+namespace controllers;
+
+use lib\mainFunctions;
+use models\AdminModel;
+use classes\Account;
 
 class adminController implements IController {
     public function testAction() {
@@ -11,7 +13,7 @@ class adminController implements IController {
     }
 
     public function indexAction() {
-        $ap = new AdminPanel();
+        $ap = new AdminModel();
 
         $mainf = mainFunctions::getInstance();
         $smarty = $mainf->getSmarty();
@@ -74,7 +76,7 @@ class adminController implements IController {
     }
 
     public function modulesAction() {
-        $ap = new AdminPanel();
+        $ap = new AdminModel();
 
         if(!$ap->isAuthenticated()) $this->backToMain();
 
@@ -89,17 +91,18 @@ class adminController implements IController {
                                             )));
         if(isset($_GET['sf']))
         {
-            $controller = $_GET['sf'];
-            if(file_exists(PathModulesPrefix . $controller . PathPostfix) && file_exists(Dir . TemplatePrefix . "admin" . Separator . "modules" . Separator . $controller . TemplatePostfix))
+            $controller = strtolower($_GET['sf']);
+
+            if(file_exists(PathModulesPrefix . $controller . PathPostfix) && file_exists(DIR . TemplatePrefix . "admin" . SEPARATOR . "modules" . SEPARATOR . $controller . TemplatePostfix))
             {
-                require_once(PathModulesPrefix . $controller . PathPostfix);
+                //require_once(PathModulesPrefix . $controller . PathPostfix);
 
                 $ssf = isset($_GET['ssf']) ?
-                            (file_exists(Dir . TemplatePrefix . "admin" . Separator . "modules" . Separator . $controller . Separator . $_GET['ssf'] . TemplatePostfix) ? $_GET['ssf'] : 'index') : 'index';
+                            (file_exists(DIR . TemplatePrefix . "admin" . SEPARATOR . "modules" . SEPARATOR . $controller . SEPARATOR . $_GET['ssf'] . TemplatePostfix) ? $_GET['ssf'] : 'index') : 'index';
 
-                $controller = ucfirst($controller);
-                $articles = new $controller();
-                $controller = strtolower($controller);
+
+                $class = 'controllers\\modules\\'. $controller . 'Controller';
+                $articles = new $class();
 
                 if(method_exists($articles, $ssf . 'Action'))
                 {
@@ -112,12 +115,17 @@ class adminController implements IController {
                 $smarty->assign('username', $ap->user);
 
                 $mainf->loadTemplate('admin/module');
+
                 return;
             }
         }
 
         //Формируем страницу
         $mainf->loadTemplate('admin/modules');
+    }
+
+    private function callModule($controller, $ssf) {
+
     }
 
     public function backToMain() {

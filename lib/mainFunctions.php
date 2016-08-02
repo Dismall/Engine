@@ -1,13 +1,9 @@
 <?php
-interface ImainFunctions {
-    public function loadPage($controller, $action = 'index');
-    public function loadSmarty();
-    public function loadTemplate($tpl = 'index');
-    public function d($debug, $die = true);
-    public function DSmarty($die = true);
-}
+namespace lib;
 
-class mainFunctions implements ImainFunctions {
+use \Smarty;
+
+class mainFunctions {
     private static $instance;
     private $smarty;
 
@@ -26,7 +22,9 @@ class mainFunctions implements ImainFunctions {
     public function loadPage($controller, $action = 'index') {
         if(!file_exists(PathPrefix . $controller . PathPostfix)) $controller = 'index' AND $action = "error";
 
-        include_once PathPrefix . $controller . PathPostfix;
+        $controller = "\\controllers\\" . $controller;
+
+        //include_once PathPrefix . $controller . PathPostfix;
 
         $f = $action . "Action";
         $class = $controller . 'Controller';

@@ -1,8 +1,10 @@
 <?php
-require_once(Dir . "/models/modules/articlesModel.php");
-require_once(PathPrefix . "IModuleInterface.php");
+namespace controllers\modules;
 
-class Articles implements IModuleActionSetup {
+use models\modules\ArticleModel;
+use lib\mainFunctions;
+
+class articleController implements IModule {
     protected static $name = "Статьи";
     protected static $actions = array(
                                     "Добавить" => "add",
@@ -18,7 +20,7 @@ class Articles implements IModuleActionSetup {
         if(isset($_GET['ssf']) && intval($_GET['ssf']) > 0) $offset = (intval($_GET['ssf']) - 1) * ArticlesDefaultCount;
 
         $this->setup();
-        $articles = new News();
+        $articles = new ArticleModel();
         $this->smarty->assign('articles', $articles->getNews(null, $offset));
     }
 

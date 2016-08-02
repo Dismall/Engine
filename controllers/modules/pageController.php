@@ -1,8 +1,10 @@
 <?php
-require_once(Dir . "/models/modules/pagesModel.php");
-require_once(PathPrefix . "IModuleInterface.php");
+namespace controllers\modules;
 
-class Pages implements IModuleActionSetup {
+use models\modules\PageModel;
+use lib\mainFunctions;
+
+class pageController implements IModule {
     protected static $name = "Страницы";
     protected static $actions = array(
                                     "Добавить" => "add",

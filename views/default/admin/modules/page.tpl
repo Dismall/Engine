@@ -4,4 +4,4 @@
 {if $message}Ответ: {$message} <br> {/if}
 {if $error_message}<div class="alert alert-error">Ошибка: {$error_message}</div>{/if}
 {if $success_message}<div class="alert alert-success">{$success_message}</div>{/if}
-{include file='admin/modules/articles/'|cat:$action|cat:'.tpl'}
+{include file='admin/modules/page/'|cat:$action|cat:'.tpl'}

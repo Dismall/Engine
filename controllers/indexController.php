@@ -1,6 +1,7 @@
-<?php /* Формирование главной страницы и 404 */
-require_once(PathPrefix . "IControllerInterface.php");
-require_once(PathPrefix . "articles" . PathPostfix);
+<?php
+namespace controllers;
+
+use lib\mainFunctions;
 
 class indexController extends articlesController implements IController {
     public function indexAction() {
@@ -8,10 +9,12 @@ class indexController extends articlesController implements IController {
     }
 
     public function errorAction() {
+        $mf = mainFunctions::getInstance();
+        $smarty = $mf->getSmarty();
         //Объявляем переменные Smarty
         $smarty->assign('pageTitle', SiteName . ' - 404');
         $smarty->assign('error_message', SiteName . ' - 404');
         //Формируем страницу
-        $mainF->loadTemplate('error');
+        $mf->loadTemplate('error');
     }
 }

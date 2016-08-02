@@ -4,8 +4,8 @@
         <li>
             <a href="/admin/modules">Модули</a>
             <ul class="submenu">
-                <li><a href="/admin/modules/articles">Статьи</a></li>
-                <li><a href="/admin/modules/pages">Страницы</a></li>
+                <li><a href="/admin/modules/article">Статьи</a></li>
+                <li><a href="/admin/modules/page">Страницы</a></li>
             </ul>
         </li>
         <li><a href="/admin/me">Аккаунт</a></li>

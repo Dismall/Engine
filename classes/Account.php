@@ -1,6 +1,7 @@
 <?php
-require_once(PathPrefix . "IAccount.php");
-require_once(Dir . '/models/AccountModel.php');
+namespace classes;
+
+use models\AccountModel;
 
 class Account implements IAccount {
     private $id;

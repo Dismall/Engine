@@ -3,16 +3,17 @@
     define('SiteName', "Site.ru");
 
     //Константы путей
-    define('Separator', "\\");
-    define('Dir', dirname(__DIR__));
-    define('PathPrefix', Dir . Separator . 'controllers' . Separator);
-    define('PathModulesPrefix', Dir . Separator . 'controllers' . Separator . 'modules' . Separator);
+    define('SEPARATOR', "\\");
+    define('DIR', dirname(__DIR__));
+    define('PathPrefix', DIR . SEPARATOR . 'controllers' . SEPARATOR);
+    define('PathModulesPrefix', DIR . SEPARATOR . 'controllers' . SEPARATOR . 'modules' . SEPARATOR);
     define('PathPostfix', 'Controller.php');
+    define('EXT_PHP', '.php');
 
     //Константы Smarty
     $template = 'default'; //Шаблон
 
-    define('TemplatePrefix', Separator . 'views' . Separator . $template . Separator);
+    define('TemplatePrefix', SEPARATOR . 'views' . SEPARATOR . $template . SEPARATOR);
     define('TemplatePostfix', '.tpl');
     define('TemplatePath', "/templates/{$template}/");
 

@@ -1,7 +1,7 @@
 <?php
-require_once(PathPrefix . "IControllerInterface.php");
-require_once(PathPrefix . "index" . PathPostfix);
-require_once(Dir . "/models/modules/pagesModel.php");
+namespace controllers;
+
+use models\modules\PageModel;
 
 class pageController extends indexController implements IController {
     public function indexAction() {

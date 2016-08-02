@@ -1,15 +1,9 @@
 <?php
+namespace lib;
 
-interface IDB {
-    public function __construct();
-    public function __destruct();
-    public function Query($sql, $arr = array(), $fm = PDO::FETCH_ASSOC);
-    public function getLastInsertId();
-    public function getStatus();
-    public function getConn();
-}
+use PDO;
 
-class DB implements IDB {
+class DataBase {
     private static $instance;
     private $conn;
     private $sql;
@@ -17,7 +11,7 @@ class DB implements IDB {
 
     public static function getInstance() {
         if(!isset(self::$instance))
-            self::$instance = new DB();
+            self::$instance = new DataBase();
 
         return self::$instance;
     }

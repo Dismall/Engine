@@ -1,8 +1,11 @@
 <?php
-require_once(PathPrefix . "IControllerInterface.php");
-require_once(Dir . "/models/modules/articlesModel.php"); //Подключаем набор функций статей
+namespace controllers;
 
-class articlesController implements IController{
+use models\modules\ArticleModel;
+use lib\mainFunctions;
+use lib\DataBase;
+
+class articlesController implements IController {
     public function indexAction() {
         $this->pageAction();
     }
@@ -11,7 +14,7 @@ class articlesController implements IController{
     }
 
     public function pageAction() {
-        $articleClass = new News(); //Создаем экземпляр класса
+        $articleClass = new ArticleModel(); //Создаем экземпляр класса
 
         $offset = 0;
         if(isset($_GET['sf']) && intval($_GET['sf']) > 0) $offset = (intval($_GET['sf']) - 1) * ArticlesDefaultCount;
@@ -24,7 +27,7 @@ class articlesController implements IController{
         //Объявляем переменные Smarty
         $smarty->assign('pageTitle', 'Статьи');
         $smarty->assign('articles', $articles);
-        $smarty->assign('status', DB::getInstance()->getStatus());
+        $smarty->assign('status', DataBase::getInstance()->getStatus());
 
         //Формируем страницу
         $mainf->loadTemplate('index');

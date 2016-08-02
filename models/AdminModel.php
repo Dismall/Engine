@@ -1,5 +1,9 @@
 <?php
-class AdminPanel {
+namespace models;
+
+use lib\DataBase;
+
+class AdminModel {
     public $user;
     public $userID;
     public $right;
@@ -21,7 +25,7 @@ class AdminPanel {
                     AND
                         Accounts.id = ?
                     LIMIT 1';
-            $result = DB::getInstance()->Query($sql, array($_SESSION['userHash'], $_SESSION['userID']));
+            $result = DataBase::getInstance()->Query($sql, array($_SESSION['userHash'], $_SESSION['userID']));
             if($result->rowCount() != 1) return false;
 
             $row = $result->fetch();

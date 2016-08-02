@@ -1,22 +1,25 @@
 <?php
-    //Подключение библиотек
-    include_once(dirname(__FILE__) . "/config/config.php"); //Конфигурация
-    include_once(Dir . "/models/DBModel.php"); //База данных
-    include_once(Dir . "/lib/mainFunc.php"); //Основные функции
-    include_once(Dir . "/lib/Smarty/libs/Smarty.class.php"); //Smarty
+require_once(dirname(__FILE__) . "/config/config.php");
+require_once(DIR . "/lib/Smarty/libs/Smarty.class.php");
+require_once(DIR . "/lib/Loader.php");
 
-    //Определение страницы и метода
-    $page = isset($_GET['p']) ? mb_strtolower($_GET['p']) : "index"; //Страница
-    $func = isset($_GET['f']) ? mb_strtolower($_GET['f']) : "index"; //Метод
-    if(empty($page)) $page = "index";
+spl_autoload_register(['\lib\Loader', 'loadClass']);
 
-    //Создание экзепляров: основных функций и базы данных
-    $mainFunc = mainFunctions::getInstance();
-    $db = DB::getInstance();
+use lib\mainFunctions;
+use lib\DataBase;
 
-    //Формирование страницы
-    $mainFunc->loadSmarty(); //Инициализация Smarty
-    $mainFunc->loadPage($page, $func); //Загрузка страницы
+//Определение страницы и метода
+$page = isset($_GET['p']) ? mb_strtolower($_GET['p']) : "index"; //Страница
+$func = isset($_GET['f']) ? mb_strtolower($_GET['f']) : "index"; //Метод
+if(empty($page)) $page = "index";
 
-    //$mainFunc->d($db->getStatus());
-    //$mainFunc->DSmarty();
+//Создание экзепляров: основных функций и базы данных
+$mainFunc = mainFunctions::getInstance();
+$db = DataBase::getInstance();
+
+//Формирование страницы
+$mainFunc->loadSmarty(); //Инициализация Smarty
+$mainFunc->loadPage($page, $func); //Загрузка страницы
+
+//$mainFunc->d($db->getStatus());
+//$mainFunc->DSmarty();
