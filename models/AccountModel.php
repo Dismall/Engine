@@ -42,7 +42,30 @@ class AccountModel {
                     "hash" => $hash);
     }
 
-    public static function CheckAuth() {
+    public static function CheckAuth($uID, $hash) {
+        $sql = 'SELECT
+                    Accounts.id,
+                    Accounts.username,
+                    Accounts.role,
+                    Accounts.active
+                FROM
+                    "Accounts" AS Accounts
+                WHERE
+                    Accounts.hash = ?
+                AND
+                    Accounts.id = ?
+                LIMIT 1';
+        $result = DataBase::getInstance()->Query($sql, array($hash, $uID));
+        if($result->rowCount() != 1)
+            return array("success" => false, "message" => "Пользователь не найден!");
 
+        $row = $result->fetch();
+        if(!(bool)$row['active'])
+            return array("success" => false, "message" => "Пользователь заблокирован!");
+
+        return array("success" => true,
+                    "id" => $row['id'],
+                    "name" => $row['username'],
+                    "role" => $row['role']);
     }
 }

@@ -2,8 +2,8 @@
 namespace controllers;
 
 use lib\mainFunctions;
-use models\AdminModel;
 use classes\Account;
+use classes\Session;
 
 class adminController implements IController {
     public function testAction() {
@@ -13,21 +13,22 @@ class adminController implements IController {
     }
 
     public function indexAction() {
-        $ap = new AdminModel();
-
         $mainf = mainFunctions::getInstance();
         $smarty = $mainf->getSmarty();
 
-        $smarty->assign('is_auth', $ap->isAuthenticated());
+        $account = Account::getInstance();
+        $auth = $account->isAuth();
+
+        $smarty->assign('is_auth', ($auth['success'] && $account->isAdmin()) ? true : false);
         $smarty->assign('stylesheet', array_merge(
                                             $smarty->tpl_vars['stylesheet']->value,
                                             array(
                                                 "admin_desktop" => "min-width: 1000.1px",
                                                 "admin_mobile" => "max-width: 1000px"
                                             )));
-        $smarty->assign('username', $ap->user);
-        $smarty->assign('userID', $ap->userID);
-        $smarty->assign('userRole', $ap->right);
+        $smarty->assign('username', $account->getName());
+        $smarty->assign('userID', $account->getID);
+        $smarty->assign('userRole', $account->getRole());
         $smarty->assign('userHash', $_SESSION['userHash']);
 
         //Формируем страницу
@@ -43,6 +44,7 @@ class adminController implements IController {
 
         $account = Account::getInstance();
         $auth = $account->Auth($user, $password);
+
         if(!$account->isAdmin())
             $smarty->assign('error_message', 'Доступ запрещен!');
         else
@@ -52,13 +54,7 @@ class adminController implements IController {
     }
 
     public function logoutAction() {
-        session_start();
-
-        if(isset($_SESSION['userID']) || isset($_SESSION['userHash']))
-        {
-            unset($_SESSION['userID']);
-            unset($_SESSION['userHash']);
-        }
+        Session::Close();
 
         header("Location: /admin");
         exit();
@@ -76,9 +72,10 @@ class adminController implements IController {
     }
 
     public function modulesAction() {
-        $ap = new AdminModel();
+        $account = Account::getInstance();
+        $auth = $account->isAuth();
 
-        if(!$ap->isAuthenticated()) $this->backToMain();
+        if(!$auth['success']) $this->backToMain();
 
         $mainf = mainFunctions::getInstance();
         $smarty = $mainf->getSmarty();
@@ -122,10 +119,6 @@ class adminController implements IController {
 
         //Формируем страницу
         $mainf->loadTemplate('admin/modules');
-    }
-
-    private function callModule($controller, $ssf) {
-
     }
 
     public function backToMain() {

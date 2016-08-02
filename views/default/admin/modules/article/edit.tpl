@@ -16,10 +16,16 @@
     { title: 'Vertical line', selector: 'blockquote', styles: {paddingLeft: '5px', borderLeft: '5px solid #CCC'} }
     ]
 });</script>{/literal}
-<form method="post" action="/admin/modules/articles/update/{$article->id}">
+<form method="post" action="/admin/modules/article/update/{$article->id}" novalidate="">
     <input class="wmax" name="title" type="text" placeholder="Заголовок" required="true" value="{$article->title}">
     <textarea id="articleText" name="articleText" placeholder="Текст статьи" required="true">{$article->text}</textarea>
     <label><input class="inline" name="visiable" type="checkbox" {if $article->show}checked{/if}>Показывать статью?</label>
+    <input type="email" name="tags" list="emails" placeholder="Укажите теги" value="{','|implode:$article->tags}">
+    <datalist id="emails">
+        {foreach from=$article->tags item=tag}
+            <option value="{$tag}">
+        {/foreach}
+    </datalist>
     <input class="wmax input_select" name="author" list="users" required="true" placeholder="Выберите пользователя" value="{$article->author}">
     <datalist id="users">
         <option value="{$username}">

@@ -23,7 +23,10 @@ footer {
 }
 
 .alert {
-    display: inline-block;
+    display: block;
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
     font-weight: 600;
     border: 4px double #e9b23d;
     background-color: #dfcf62;
@@ -41,6 +44,37 @@ footer {
     background-color: #66cc66;
     border-color: #33cc33;
     color: #006600;
+}
+
+.fadeOut {
+    -moz-animation: fadeOut 1s ease-in 5s forwards;
+    /* Firefox */
+    -webkit-animation: fadeOut 1s ease-in 5s forwards;
+    /* Safari and Chrome */
+    -o-animation: fadeOut 1s ease-in 5s forwards;
+    /* Opera */
+    animation: fadeOut 1s ease-in 5s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        width:0;
+        height:0;
+        overflow:hidden;
+        display: none;
+    }
+}
+@-webkit-keyframes fadeOut {
+    to {
+        opacity: 0;
+        width:0;
+        height:0;
+        visibility:hidden;
+        display: none;
+    }
 }
 
 input {

@@ -19,9 +19,22 @@ class Account implements IAccount {
             $this->username = $user['name'];
             $this->role = $user['role'];
 
-            session_start();
-            $_SESSION['userHash'] = $user['hash'];
-            $_SESSION['userID'] = $user['id'];
+            Session::Open($user['id'], $user['hash']);
+
+            return array("success" => true, "message" => "Авторизация выполнена!", "method" => __METHOD__);
+        }
+
+        return array("success" => false, "message" => $user['message'], "method" => __METHOD__);
+    }
+
+    public function isAuth() {
+        $user = AccountModel::CheckAuth(Session::getID(), Session::getHash());
+
+        if($user['success'])
+        {
+            $this->id = $user['id'];
+            $this->username = $user['name'];
+            $this->role = $user['role'];
 
             return array("success" => true, "message" => "Авторизация выполнена!", "method" => __METHOD__);
         }
@@ -30,15 +43,19 @@ class Account implements IAccount {
     }
 
     public function DeAuth() {
-        session_destroy();
+        Session::Close();
     }
 
     public function isAdmin() {
-        return (isset($role) && $role === "Admin") ? true : false;
+        return (isset($this->role) && $this->role === "Admin") ? true : false;
     }
 
     public function getID() {
         return $this->id;
+    }
+
+    public function getRole() {
+        return $this->role;
     }
 
     public function getName() {

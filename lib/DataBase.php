@@ -2,6 +2,7 @@
 namespace lib;
 
 use PDO;
+use Exception;
 
 class DataBase {
     private static $instance;
@@ -64,7 +65,7 @@ class DataBase {
      * Получение индекса последней строки
      * @return int
      */
-    public function getLastInsertId() {
+    public function getLastInsertID() {
         return $this->conn->lastInsertId();
     }
 

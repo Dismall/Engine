@@ -1,7 +1,9 @@
 <?php
 namespace models\modules;
 
+use Exception;
 use lib\DataBase;
+use classes\Account;
 
 class ArticleModel {
     private $db;
@@ -84,13 +86,15 @@ class ArticleModel {
         if($result->rowCount() != 1) return false;
 
         $row = $result->fetch();
+
         $article = new Article($row['title'],
                                 $row['text'],
                                 $row['author'],
                                 $row['date'],
-                                $row['tag'] != null ? implode(json_decode($row['tag']), ", ") : null, //Раскодирование JSON и соединение массива
+                                $row['tag'] != null ? json_decode($row['tag']) : null, //Раскодирование JSON и соединение массива
                                 null,
-                                $id, $row['show']);
+                                $id,
+                                $row['show']);
 
         return $article;
     }
@@ -115,7 +119,7 @@ class ArticleModel {
 
     }
 
-    public function addArticle($title, $content, $author, $visiable) {
+    public function addArticle($title, $content, $author, $visiable, $tags = null) {
         $sql = 'SELECT Accounts.id FROM "Accounts" AS Accounts WHERE LOWER(Accounts.username) = LOWER(?)';
         $result = $this->db->Query($sql, array($author));
         if($result->rowCount() != 1)
@@ -123,13 +127,32 @@ class ArticleModel {
         $id = $result->fetch()['id'];
 
         $visiable = $visiable ? 'true' : 'false';
-        $sql = 'INSERT INTO "Articles"(title, text, author, show, date) VALUES(?, ?, ?, ?, NOW())';
-        $this->db->Query($sql, array(
+
+
+        if(isset($tags)) $this->db->getConn()->beginTransaction();
+        $sql = 'INSERT INTO "Articles"(title, text, author, show, date) VALUES(?, ?, ?, ?, NOW()) RETURNING id';
+        $result = $this->db->Query($sql, array(
                                     $title,
                                     $content,
                                     $id,
                                     $visiable
                                 ));
+        if(isset($tags))
+        {
+            $sql1 = 'INSERT INTO "Tags"(name, "userId", date) VALUES(?, ?, NOW()) RETURNING id';
+            $sql2 = 'INSERT INTO "ArticleTags"("ArticleId", "TagId") VALUES(?, ?)';
+
+            $tags = explode(",", $tags);
+            $userID = Account::getInstance()->getID();
+            $articleID = $result->fetch()['id'];
+
+            foreach ($tags as $tag) {
+                $result = $this->db->Query($sql1, [trim($tag), $userID]);
+                $this->db->Query($sql2, [$articleID, $result->fetch()['id']]);
+            }
+
+            $this->db->getConn()->commit();
+        }
 
         return $this->success(ARTICLES_ADD_SUCCESS, __METHOD__);
     }
@@ -143,7 +166,7 @@ class ArticleModel {
         return $this->success(ARTICLES_DELETE_SUCCESS, __METHOD__);
     }
 
-    public function updateArticle($id, $title, $text, $author, $show) {
+    public function updateArticle($id, $title, $text, $author, $show, $tags = null) {
 
         $sql = 'SELECT Accounts.id FROM "Accounts" AS Accounts WHERE LOWER(Accounts.username) = LOWER(?)';
         $result = $this->db->Query($sql, array($author));
@@ -151,12 +174,48 @@ class ArticleModel {
             return $this->error(ARTICLES_USER_NOTFOUND, __METHOD__);
         $userID = $result->fetch()['id'];
 
+        if(isset($tags))
+        {
+            $this->db->getConn()->beginTransaction();
+
+            $sql = 'DELETE FROM "ArticleTags" WHERE "ArticleId" = ?';
+            $this->db->Query($sql, [$id]);
+
+            $sql1 = 'INSERT INTO "Tags"(name, "userId", date) VALUES(?, ?, NOW()) RETURNING id';
+            $sql2 = 'INSERT INTO "ArticleTags"("ArticleId", "TagId") VALUES(?, ?)';
+            $sql = 'SELECT currval("tags_id_seq")';
+
+            $tags = explode(",", $tags);
+            foreach ($tags as $tag) {
+                try{
+                $result = $this->db->Query($sql1, [trim($tag), $userID]);
+            }catch(Exception $e){
+                
+            }
+                $rID = $result->fetch()['id'];
+                if(!isset($rID))
+                    $rID = $this->db->Query($sql, [])->fetch()['currval'];
+
+                $this->db->Query($sql2, [$id, $rID]);
+            }
+
+            $this->db->getConn()->commit();
+        }
+
         $sql = 'UPDATE "Articles" SET title=?, text=?, author=?, show=? WHERE id=?';
         $result = $this->db->Query($sql, array($title, $text, $userID, $show, $id));
         if($result->rowCount() != 1)
             return $this->error(ARTICLES_UPDATE_ERROR, __METHOD__);
 
         return $this->success(ARTICLES_UPDATE_SUCCESS, __METHOD__);
+    }
+
+    public function getAllTags() {
+        $sql = 'SELECT Tag.name FROM "Tags" AS Tag';
+        $result = $this->db->Query($sql, array());
+        if($result->rowCount() != 0)
+            return $result;
+        return false;
     }
 
     private function error($str, $method) {

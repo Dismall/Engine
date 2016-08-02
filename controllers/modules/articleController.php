@@ -27,12 +27,20 @@ class articleController implements IModule {
     public function addAction()
     {
         $this->setup();
+
+        $articles = new ArticleModel();
+        $result = $articles->getAllTags();
+        if($result)
+            while($row = $result->fetch())
+                $tags[] = $row['name'];
+
+        $this->smarty->assign('tags', $tags);
     }
 
     public function deleteAction()
     {
         $this->setup();
-        $articles = new News();
+        $articles = new ArticleModel();
 
         if(isset($_POST['deleteID']) || isset($_GET['id']))
         {
@@ -57,7 +65,7 @@ class articleController implements IModule {
 
         $this->setup();
 
-        $articles = new News();
+        $articles = new ArticleModel();
         $res = $articles->getArticleById(intval($_GET['id']));
         if($res) $this->smarty->assign('article', $res);
     }
@@ -72,8 +80,8 @@ class articleController implements IModule {
 
         if(isset($_POST['title']) && isset($_POST['articleText']) && isset($_POST['visiable']) && isset($_POST['author']))
         {
-            $articles = new News();
-            $result = $articles->addArticle($_POST['title'], $_POST['articleText'], $_POST['author'], $_POST['visiable']);
+            $articles = new ArticleModel();
+            $result = $articles->addArticle($_POST['title'], $_POST['articleText'], $_POST['author'], $_POST['visiable'], $_POST['tags']);
 
             $this->smarty->assign(($result['success'] ? 'success' : 'error') . '_message', $result['message']);
         }
@@ -91,12 +99,13 @@ class articleController implements IModule {
 
         if(isset($_GET['id']) && isset($_POST['title']) && isset($_POST['articleText']) && isset($_POST['visiable']) && isset($_POST['author']))
         {
-            $articles = new News();
+            $articles = new ArticleModel();
             $result = $articles->updateArticle(intval($_GET['id']),
                                     $_POST['title'],
                                     $_POST['articleText'],
                                     $_POST['author'],
-                                    $_POST['visiable']);
+                                    $_POST['visiable'],
+                                    $_POST['tags']);
             $this->smarty->assign(($result['success'] ? 'success' : 'error') . '_message', $result['message']);
         }
         else
