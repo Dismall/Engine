@@ -20,9 +20,9 @@
     <input class="wmax" name="title" type="text" placeholder="Заголовок" required="true" value="{$article->title}">
     <textarea id="articleText" name="articleText" placeholder="Текст статьи" required="true">{$article->text}</textarea>
     <label><input class="inline" name="visiable" type="checkbox" {if $article->show}checked{/if}>Показывать статью?</label>
-    <input type="email" name="tags" list="emails" placeholder="Укажите теги" value="{','|implode:$article->tags}">
+    <input type="email" name="tags" list="emails" placeholder="Укажите теги" value="{if $article->tags}{','|implode:$article->tags}{/if}">
     <datalist id="emails">
-        {foreach from=$article->tags item=tag}
+        {foreach from=$tags item=tag}
             <option value="{$tag}">
         {/foreach}
     </datalist>

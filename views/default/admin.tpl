@@ -4,7 +4,7 @@
         {if $success_message}<div class="alert alert-success fadeOut">{$success_message}</div>{/if}
         {include file='admin/index.tpl'}
     {else}
-        {if $error_message}<div class="alert alert-error">Ошибка: {$error_message}</div>{/if}
+        {if $error_message}<div class="alert alert-error fadeOut">Ошибка: {$error_message}</div>{/if}
         {include file='admin/authForm.tpl'}
     {/if}
 {include file='footer.tpl'}

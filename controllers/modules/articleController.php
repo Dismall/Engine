@@ -67,7 +67,14 @@ class articleController implements IModule {
 
         $articles = new ArticleModel();
         $res = $articles->getArticleById(intval($_GET['id']));
-        if($res) $this->smarty->assign('article', $res);
+        
+        $tags = $articles->getAllTags();
+        while($row = $tags->fetch())
+            $tag[] = $row['name'];
+        $this->smarty->assign('tags', $tag);
+
+        if($res)
+            $this->smarty->assign('article', $res);
     }
 
     /**

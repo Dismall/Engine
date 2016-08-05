@@ -181,22 +181,20 @@ class ArticleModel {
             $sql = 'DELETE FROM "ArticleTags" WHERE "ArticleId" = ?';
             $this->db->Query($sql, [$id]);
 
-            $sql1 = 'INSERT INTO "Tags"(name, "userId", date) VALUES(?, ?, NOW()) RETURNING id';
-            $sql2 = 'INSERT INTO "ArticleTags"("ArticleId", "TagId") VALUES(?, ?)';
-            $sql = 'SELECT currval("tags_id_seq")';
+            if(!empty($tags))
+            {
+                $sql1 = 'SELECT "AddNewTags"(?, ?)';
+                $sql2 = 'INSERT INTO "ArticleTags"("ArticleId", "TagId") VALUES(?, ?)';
 
-            $tags = explode(",", $tags);
-            foreach ($tags as $tag) {
-                try{
-                $result = $this->db->Query($sql1, [trim($tag), $userID]);
-            }catch(Exception $e){
-                
-            }
-                $rID = $result->fetch()['id'];
-                if(!isset($rID))
-                    $rID = $this->db->Query($sql, [])->fetch()['currval'];
+                $tags = $this->to_pg_array(array_filter(explode(",", $tags)));
 
-                $this->db->Query($sql2, [$id, $rID]);
+                $result = $this->db->Query($sql1, [$tags, $userID]);
+                $result = json_decode(str_replace(array("{", "}"), array("[", "]"), $result->fetch()['AddNewTags']));
+
+                //die(var_dump($result->fetch()));
+                foreach ($result as $tagID) {
+                    $this->db->Query($sql2, [$id, intval($tagID)]);
+                }
             }
 
             $this->db->getConn()->commit();
@@ -208,6 +206,22 @@ class ArticleModel {
             return $this->error(ARTICLES_UPDATE_ERROR, __METHOD__);
 
         return $this->success(ARTICLES_UPDATE_SUCCESS, __METHOD__);
+    }
+
+    function to_pg_array($set) {
+        settype($set, 'array'); // can be called with a scalar or array
+        $result = array();
+        foreach ($set as $t) {
+            if (is_array($t)) {
+                $result[] = to_pg_array($t);
+            } else {
+                $t = str_replace('"', '\\"', $t); // escape double quote
+                if (! is_numeric($t)) // quote only non-numeric values
+                    $t = '"' . $t . '"';
+                $result[] = $t;
+            }
+        }
+        return '{' . implode(",", $result) . '}'; // format
     }
 
     public function getAllTags() {
